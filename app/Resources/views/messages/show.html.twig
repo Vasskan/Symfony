@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    <h1>Message</h1>
+
+    <table class="table table-hover table-responsive">
+        <tbody>
+            <tr>
+                <th>Username</th>
+                <td>{{ message.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ message.email }}</td>
+            </tr>
+            <tr>
+                <th>Homepage</th>
+                <td>{{ message.homepage }}</td>
+            </tr>
+            <tr>
+                <th>Message</th>
+                <td>{{ message.message }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if message.date %}{{ message.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Userip</th>
+                <td>{{ message.userip }}</td>
+            </tr>
+            <tr>
+                <th>Browser</th>
+                <td>{{ message.browser }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ message.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('messages_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('messages_edit', { 'id': message.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

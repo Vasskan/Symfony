@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Messages list</h1>
+
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>{{ knp_pagination_sortable(messages, 'Username', 'm.username') }}</th>
+                <th>{{ knp_pagination_sortable(messages, 'Email', 'm.email') }}</th>
+                <th>Homepage</th>
+                <th>Message</th>
+                <th>{{ knp_pagination_sortable(messages, 'Date', 'm.date') }}</th>
+                <th>Userip</th>
+                <th>Browser</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>{{ message.id }}</td>
+                <td><a href="{{ path('messages_show', { 'id': message.id }) }}">{{ message.username }}</a></td>
+                <td>{{ message.email }}</td>
+                <td>{{ message.homepage }}</td>
+                <td>{{ message.message }}</td>
+                <td>{% if message.date %}{{ message.date|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ message.userip }}</td>
+                <td>{{ message.browser }}</td>
+                <td><img src = "{{ asset( 'uploads/images/' ~ message.image) }}"></td>
+                <td>
+                    <a class="btn btn-default btn-sm"  href="{{ path('messages_show', { 'id': message.id }) }}">show</a>
+                    <a class="btn btn-danger btn-sm" href="{{ path('messages_edit', { 'id': message.id }) }}">edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li class="btn btn-default">
+            <a href="{{ path('messages_new') }}">Create a new message</a>
+        </li>
+    </ul>
+
+    <div class="navigation text-center">
+        {{ knp_pagination_render(messages) }}
+    </div>
+
+
+{% endblock %}
