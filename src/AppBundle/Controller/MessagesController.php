@@ -9,6 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
  * Message controller.
@@ -60,6 +62,7 @@ class MessagesController extends Controller
             'browser' => $_SERVER['HTTP_USER_AGENT']
         ));
         $form->handleRequest($request);
+        $alert_image = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
@@ -85,10 +88,14 @@ class MessagesController extends Controller
             );
 
             $message->setTextfile($filename);
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($message);
             $em->flush();
+
+            if (!$_FILES['appbundle_messages']['type']['image'] == 'image/jpeg') {
+                $this
+                    ->addFlash('success', 'Image attached!');
+            }
 
             return $this->redirectToRoute('messages_show', array('id' => $message->getId()));
         }
@@ -96,6 +103,7 @@ class MessagesController extends Controller
         return $this->render('messages/new.html.twig', array(
             'message' => $message,
             'form' => $form->createView(),
+            'alert_image' => $alert_image,
         ));
     }
 
@@ -126,11 +134,19 @@ class MessagesController extends Controller
         $deleteForm = $this->createDeleteForm($message);
         $editForm = $this->createForm('AppBundle\Form\MessagesType', $message);
         $editForm->handleRequest($request);
+        $filename = $this->getParameter('files_directory').'/'.$message->getTextfile();
+        $imagename = $this->getParameter('image_directory').'/'.$message->getImage();
+            dump($filename);
+            dump($imagename);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            /*$filename = $this->getParameter('files_directory').$message->getTextfile();
+            $imagename = $this->getParameter('image_directory').$message->getImage();
+            $filesystem = new Filesystem();
+            $filesystem->remove($filename);
+            $filesystem->remove($imagename);*/
             $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('messages_edit', array('id' => $message->getId()));
+            return $this->redirectToRoute('messages_index', array('id' => $message->getId()));
         }
 
         return $this->render('messages/edit.html.twig', array(
@@ -153,6 +169,11 @@ class MessagesController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $filename = $this->getParameter('files_directory').'/'.$message->getTextfile();
+            $imagename = $this->getParameter('image_directory').'/'.$message->getImage();
+            $filesystem = new Filesystem();
+            $filesystem->remove($filename);
+            $filesystem->remove($imagename);
             $em->remove($message);
             $em->flush();
         }

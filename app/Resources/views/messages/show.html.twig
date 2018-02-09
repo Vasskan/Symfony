@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-
-
 {% block body %}
     <h1>Message</h1>
 
@@ -38,6 +36,10 @@
             <tr>
                 <th>Id</th>
                 <td>{{ message.id }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ app.request.uri }}</td>
             </tr>
         </tbody>
     </table>

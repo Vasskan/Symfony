@@ -56,6 +56,7 @@ class MessagesType extends AbstractType
             'data_class' => 'AppBundle\Entity\Messages',
             'userip' => null,
             'browser' => null,
+            'textfile' => null,
         ));
     }
 
